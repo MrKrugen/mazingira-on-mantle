@@ -2,7 +2,8 @@
 
 import { WagmiProvider } from "wagmi";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { ConnectKitProvider } from "connectkit";
+import { RainbowKitProvider, darkTheme } from "@rainbow-me/rainbowkit";
+import "@rainbow-me/rainbowkit/styles.css";
 import { wagmiConfig } from "@/lib/wagmi";
 import { ReactNode, useState } from "react";
 
@@ -12,15 +13,15 @@ export function Providers({ children }: { children: ReactNode }) {
   return (
     <WagmiProvider config={wagmiConfig}>
       <QueryClientProvider client={queryClient}>
-        <ConnectKitProvider
-          theme="auto"
-          customTheme={{
-            "--ck-accent-color": "#16a34a",
-            "--ck-accent-text-color": "#ffffff",
-          }}
+        <RainbowKitProvider
+          theme={darkTheme({
+            accentColor: "#16a34a",
+            accentColorForeground: "white",
+            borderRadius: "large",
+          })}
         >
           {children}
-        </ConnectKitProvider>
+        </RainbowKitProvider>
       </QueryClientProvider>
     </WagmiProvider>
   );

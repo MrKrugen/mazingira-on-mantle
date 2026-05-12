@@ -1,6 +1,5 @@
-import { createConfig, http } from "wagmi";
-import { mainnet } from "wagmi/chains";
-import { getDefaultConfig } from "connectkit";
+import { getDefaultConfig } from "@rainbow-me/rainbowkit";
+import { http } from "wagmi";
 import { defineChain } from "viem";
 
 export const mantleSepolia = defineChain({
@@ -28,17 +27,13 @@ export const mantle = defineChain({
   },
 });
 
-export const wagmiConfig = createConfig(
-  getDefaultConfig({
-    chains: [mantle, mantleSepolia],
-    transports: {
-      [mantle.id]: http("https://rpc.mantle.xyz"),
-      [mantleSepolia.id]: http("https://rpc.sepolia.mantle.xyz"),
-    },
-    walletConnectProjectId: process.env.NEXT_PUBLIC_WALLETCONNECT_PROJECT_ID || "",
-    appName: "Mazingira on Mantle",
-    appDescription: "Africa's green economy, on-chain — turning green inventory into investable digital assets with AI-powered price discovery.",
-    appUrl: "https://mazingira-on-mantle.petermwembe.workers.dev",
-    appIcon: "/logo.png",
-  })
-);
+export const wagmiConfig = getDefaultConfig({
+  appName: "Mazingira on Mantle",
+  projectId: process.env.NEXT_PUBLIC_WALLETCONNECT_PROJECT_ID || "",
+  chains: [mantle, mantleSepolia],
+  transports: {
+    [mantle.id]: http("https://rpc.mantle.xyz"),
+    [mantleSepolia.id]: http("https://rpc.sepolia.mantle.xyz"),
+  },
+  ssr: true,
+});

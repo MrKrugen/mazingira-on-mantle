@@ -1,36 +1,99 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Mazingira on Mantle 🌿
 
-## Getting Started
+> **Africa's green economy, on-chain** — turning African green inventory into investable digital assets with AI-powered price discovery.
 
-First, run the development server:
+Built for the [Turing Test Hackathon 2026](https://turingtest.mantle.xyz) by Mantle Network.
 
+**Tracks:** AI x RWA · Consumer & Viral DApps · Best UI/UX · Agentic Economy
+
+---
+
+## What it is
+
+Mazingira on Mantle is a DApp where African green entrepreneurs — clean energy producers, sustainable farmers, recycling businesses — tokenize their real-world inventory as ERC-1155 assets on the Mantle blockchain. Global buyers and investors can discover, purchase, and invest in these tokenized assets using MNT. An AI agent (powered by Claude) provides pricing intelligence and buyer-seller matching.
+
+**One-line pitch:** Africa's green economy, on-chain — real vendors, real inventory, real impact.
+
+## Origin story
+
+This project evolved from **FuelFlow** (VibeJam 2026 Grand Champion), a biomass marketplace for African producers. MazingiraHub expanded that to all green entrepreneurs across Kenya and East Africa. Mazingira on Mantle brings that live marketplace on-chain — so those real vendors and real products become investable digital assets.
+
+---
+
+## Tech stack
+
+| Layer | Tech |
+|-------|------|
+| Frontend | Next.js 16, React 19, TypeScript, Tailwind CSS |
+| Web3 | wagmi v2, viem, RainbowKit |
+| Blockchain | Mantle Network (EVM-compatible) |
+| Smart contracts | Solidity 0.8.24, ERC-1155, OpenZeppelin v5 |
+| Contract tooling | Hardhat v3 |
+| AI agent | Anthropic Claude API |
+| Hosting | Cloudflare Pages |
+
+---
+
+## Getting started
+
+### 1. Install dependencies
 ```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+npm install
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+### 2. Set up environment
+```bash
+cp .env.local.example .env.local
+# Fill in: NEXT_PUBLIC_WALLETCONNECT_PROJECT_ID, ANTHROPIC_API_KEY
+```
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+### 3. Run the dev server
+```bash
+npm run dev
+```
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+### 4. Compile contracts
+```bash
+npm run compile
+```
 
-## Learn More
+### 5. Deploy to Mantle Sepolia testnet
+```bash
+# Add DEPLOYER_PRIVATE_KEY to .env.local first
+npm run deploy:testnet
+```
 
-To learn more about Next.js, take a look at the following resources:
+---
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+## Smart contract: MazingiraRWA
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+`contracts/MazingiraRWA.sol` — ERC-1155 where each token ID represents a real-world product batch from a verified vendor.
 
-## Deploy on Vercel
+| Function | Description |
+|----------|-------------|
+| `listProduct(...)` | Vendor mints inventory tokens onto the chain |
+| `purchaseProduct(tokenId, qty)` | Buyer pays MNT, tokens transfer to buyer |
+| `approveVendor(address)` | Platform approves a vendor (owner only) |
+| `getProduct(tokenId)` | View full product details on-chain |
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+Platform fee: **2.5%** (configurable up to 10%).
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+---
+
+## Project structure
+
+```
+mazingira-on-mantle/
+├── contracts/            # MazingiraRWA.sol (ERC-1155 RWA)
+├── scripts/              # Hardhat deploy scripts
+├── src/
+│   ├── app/              # Next.js App Router pages + providers
+│   ├── components/       # Navbar, Hero, Marketplace, AI Agent UI
+│   └── lib/              # wagmi config, contract ABI + addresses
+└── hardhat.config.ts
+```
+
+---
+
+Built by **Krugen** (Peter Mwembe) · Nairobi, Kenya  
+Powered by Mantle Network · Claude AI · Cloudflare
