@@ -1,8 +1,15 @@
 import { NextRequest } from "next/server";
 import Anthropic from "@anthropic-ai/sdk";
-import { createPublicClient, http, formatEther } from "viem";
+import { createPublicClient, http, formatEther, defineChain } from "viem";
 import { MAZINGIRA_RWA_ABI, CONTRACT_ADDRESSES, CATEGORY_LABELS } from "@/lib/contracts";
-import { mantleSepolia } from "@/lib/wagmi";
+
+// Defined inline — importing from @/lib/wagmi pulls in RainbowKit which requires a browser context
+const mantleSepolia = defineChain({
+  id: 5003,
+  name: "Mantle Sepolia",
+  nativeCurrency: { name: "MNT", symbol: "MNT", decimals: 18 },
+  rpcUrls: { default: { http: ["https://rpc.sepolia.mantle.xyz"] } },
+});
 
 const anthropic = new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY });
 
