@@ -103,7 +103,7 @@ export default function ListProductPage() {
                 placeholder="e.g. Biomass Briquettes — 500kg Batch"
                 value={form.name}
                 onChange={set("name")}
-                className="w-full px-4 py-3 border border-gray-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent"
+                className="w-full px-4 py-3 border border-gray-200 rounded-xl text-sm text-gray-900 focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent"
               />
             </div>
 
@@ -131,7 +131,7 @@ export default function ListProductPage() {
                   placeholder="0.15"
                   value={form.pricePerUnit}
                   onChange={set("pricePerUnit")}
-                  className="w-full px-4 py-3 border border-gray-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-green-500"
+                  className="w-full px-4 py-3 border border-gray-200 rounded-xl text-sm text-gray-900 focus:outline-none focus:ring-2 focus:ring-green-500"
                 />
               </div>
               <div>
@@ -143,7 +143,7 @@ export default function ListProductPage() {
                   placeholder="500"
                   value={form.supply}
                   onChange={set("supply")}
-                  className="w-full px-4 py-3 border border-gray-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-green-500"
+                  className="w-full px-4 py-3 border border-gray-200 rounded-xl text-sm text-gray-900 focus:outline-none focus:ring-2 focus:ring-green-500"
                 />
               </div>
             </div>
@@ -158,7 +158,7 @@ export default function ListProductPage() {
                 placeholder="120"
                 value={form.co2SavedKgPerUnit}
                 onChange={set("co2SavedKgPerUnit")}
-                className="w-full px-4 py-3 border border-gray-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-green-500"
+                className="w-full px-4 py-3 border border-gray-200 rounded-xl text-sm text-gray-900 focus:outline-none focus:ring-2 focus:ring-green-500"
               />
               <p className="text-xs text-gray-400 mt-1">Used to calculate total impact displayed on your listing.</p>
             </div>
