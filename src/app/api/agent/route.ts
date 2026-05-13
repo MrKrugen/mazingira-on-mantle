@@ -98,30 +98,31 @@ export async function POST(req: NextRequest) {
     const products = await getOnChainProducts();
     const systemPrompt = buildSystemPrompt(products);
 
-    const stream = anthropic.messages.stream({
+    const stream = await anthropic.messages.create({
       model: "claude-sonnet-4-6",
       max_tokens: 1024,
-      system: [
-        {
-          type: "text",
-          text: systemPrompt,
-          cache_control: { type: "ephemeral" },
-        },
-      ],
+      system: systemPrompt,
       messages: [
         ...history,
         { role: "user" as const, content: message },
       ],
+      stream: true,
     });
 
     const encoder = new TextEncoder();
     const readable = new ReadableStream({
       async start(controller) {
-        stream.on("text", (delta) => {
-          controller.enqueue(encoder.encode(delta));
-        });
         try {
-          await stream.done();
+          for await (const event of stream) {
+            if (
+              event.type === "content_block_delta" &&
+              event.delta.type === "text_delta"
+            ) {
+              controller.enqueue(encoder.encode(event.delta.text));
+            }
+          }
+        } catch (err) {
+          console.error("[agent] stream error:", err);
         } finally {
           controller.close();
         }
