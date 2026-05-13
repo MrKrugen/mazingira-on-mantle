@@ -130,7 +130,7 @@ export function AgentChat() {
             onChange={(e) => setInput(e.target.value)}
             placeholder="Ask about pricing, products, or green impact…"
             disabled={streaming}
-            className="flex-1 px-4 py-3 border border-gray-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-green-500 disabled:bg-gray-50"
+            className="flex-1 px-4 py-3 border border-gray-200 rounded-xl text-sm text-gray-900 placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-green-500 disabled:bg-gray-50"
           />
           <button
             type="submit"
