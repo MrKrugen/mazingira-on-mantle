@@ -21,9 +21,8 @@ export const MAZINGIRA_RWA_ABI = [
   { type: "function", name: "approveVendor",    stateMutability: "nonpayable", inputs: [{ name: "vendor", type: "address" }],                 outputs: [] },
 ] as const;
 
-// Fill these in after deployment:
 export const CONTRACT_ADDRESSES = {
-  mantleSepolia: "0x0000000000000000000000000000000000000000" as `0x${string}`,
+  mantleSepolia: "0xF12c4E7296a0f0A6df8ef91712CC0bF6A189155c" as `0x${string}`,
   mantle:        "0x0000000000000000000000000000000000000000" as `0x${string}`,
 } as const;
 

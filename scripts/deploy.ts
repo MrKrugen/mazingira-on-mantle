@@ -1,6 +1,7 @@
-import { ethers } from "hardhat";
+import hre from "hardhat";
 
 async function main() {
+  const { ethers } = hre;
   const [deployer] = await ethers.getSigners();
   console.log("Deploying MazingiraRWA with:", deployer.address);
   console.log("Balance:", ethers.formatEther(await ethers.provider.getBalance(deployer.address)), "MNT");
