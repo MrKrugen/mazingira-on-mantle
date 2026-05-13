@@ -11,7 +11,10 @@ const mantleSepolia = defineChain({
   rpcUrls: { default: { http: ["https://rpc.sepolia.mantle.xyz"] } },
 });
 
-const anthropic = new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY });
+const anthropic = new Anthropic({
+  apiKey: process.env.ANTHROPIC_API_KEY,
+  baseURL: process.env.ANTHROPIC_BASE_URL,
+});
 
 const viemClient = createPublicClient({
   chain: mantleSepolia,
