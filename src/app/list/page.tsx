@@ -7,6 +7,8 @@ import { Footer } from "@/components/Footer";
 import { useListProduct, useIsApprovedVendor } from "@/hooks/useContract";
 import { CATEGORY_LABELS } from "@/lib/contracts";
 
+const MNT_USD_RATE = 0.65; // approx — update as needed
+
 export default function ListProductPage() {
   const { address, isConnected } = useAccount();
   const { data: isApproved } = useIsApprovedVendor(address);
@@ -19,6 +21,7 @@ export default function ListProductPage() {
     category: "0",
     co2SavedKgPerUnit: "",
   });
+  const [co2Loading, setCo2Loading] = useState(false);
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -33,6 +36,26 @@ export default function ListProductPage() {
 
   const set = (field: string) => (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) =>
     setForm((f) => ({ ...f, [field]: e.target.value }));
+
+  const suggestCo2 = async () => {
+    if (!form.name) return;
+    setCo2Loading(true);
+    try {
+      const res = await fetch("/api/co2-suggest", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ name: form.name, category: CATEGORY_LABELS[parseInt(form.category)] }),
+      });
+      const { co2 } = await res.json();
+      if (co2) setForm((f) => ({ ...f, co2SavedKgPerUnit: String(co2) }));
+    } finally {
+      setCo2Loading(false);
+    }
+  };
+
+  const usdEquivalent = form.pricePerUnit
+    ? `≈ $${(parseFloat(form.pricePerUnit) * MNT_USD_RATE).toFixed(2)} USD`
+    : null;
 
   return (
     <main className="min-h-screen bg-gray-50">
@@ -112,7 +135,7 @@ export default function ListProductPage() {
               <select
                 value={form.category}
                 onChange={set("category")}
-                className="w-full px-4 py-3 border border-gray-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-green-500 bg-white"
+                className="w-full px-4 py-3 border border-gray-200 rounded-xl text-sm text-gray-900 focus:outline-none focus:ring-2 focus:ring-green-500 bg-white"
               >
                 {CATEGORY_LABELS.map((label, i) => (
                   <option key={i} value={i}>{label}</option>
@@ -128,11 +151,14 @@ export default function ListProductPage() {
                   step="0.001"
                   min="0"
                   required
-                  placeholder="0.15"
+                  placeholder="1.5"
                   value={form.pricePerUnit}
                   onChange={set("pricePerUnit")}
                   className="w-full px-4 py-3 border border-gray-200 rounded-xl text-sm text-gray-900 focus:outline-none focus:ring-2 focus:ring-green-500"
                 />
+                {usdEquivalent && (
+                  <p className="text-xs text-green-600 mt-1">{usdEquivalent} · 1 MNT ≈ $0.65</p>
+                )}
               </div>
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-1.5">Supply (units)</label>
@@ -149,9 +175,19 @@ export default function ListProductPage() {
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1.5">
-                CO₂ saved per unit (kg) <span className="text-gray-400 font-normal">— optional</span>
-              </label>
+              <div className="flex items-center justify-between mb-1.5">
+                <label className="block text-sm font-medium text-gray-700">
+                  CO₂ saved per unit (kg) <span className="text-gray-400 font-normal">— optional</span>
+                </label>
+                <button
+                  type="button"
+                  onClick={suggestCo2}
+                  disabled={!form.name || co2Loading}
+                  className="text-xs text-green-700 bg-green-50 hover:bg-green-100 border border-green-200 px-2.5 py-1 rounded-lg transition-colors disabled:opacity-40"
+                >
+                  {co2Loading ? "Estimating…" : "✨ AI Suggest"}
+                </button>
+              </div>
               <input
                 type="number"
                 min="0"
