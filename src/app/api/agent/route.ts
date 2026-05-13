@@ -8,46 +8,52 @@ const anthropic = new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY });
 
 const viemClient = createPublicClient({
   chain: mantleSepolia,
-  transport: http("https://rpc.sepolia.mantle.xyz"),
+  transport: http("https://rpc.sepolia.mantle.xyz", { timeout: 8_000 }),
 });
 
 async function getOnChainProducts() {
-  try {
-    const nextTokenId = await viemClient.readContract({
-      address: CONTRACT_ADDRESSES.mantleSepolia,
-      abi: MAZINGIRA_RWA_ABI,
-      functionName: "nextTokenId",
-    });
+  const deadline = new Promise<[]>((resolve) => setTimeout(() => resolve([]), 8_000));
 
-    const count = Number(nextTokenId) - 1;
-    if (count <= 0) return [];
+  const fetch = async () => {
+    try {
+      const nextTokenId = await viemClient.readContract({
+        address: CONTRACT_ADDRESSES.mantleSepolia,
+        abi: MAZINGIRA_RWA_ABI,
+        functionName: "nextTokenId",
+      });
 
-    const results = await Promise.all(
-      Array.from({ length: count }, (_, i) =>
-        viemClient.readContract({
-          address: CONTRACT_ADDRESSES.mantleSepolia,
-          abi: MAZINGIRA_RWA_ABI,
-          functionName: "getProduct",
-          args: [BigInt(i + 1)],
-        })
-      )
-    );
+      const count = Number(nextTokenId) - 1;
+      if (count <= 0) return [];
 
-    return results
-      .map((p, i) => ({ ...p, tokenId: i + 1 }))
-      .filter((p) => p.active)
-      .map((p) => ({
-        tokenId: p.tokenId,
-        name: p.metadataURI,
-        category: CATEGORY_LABELS[Number(p.category)] ?? "Unknown",
-        pricePerUnit: formatEther(p.pricePerUnit) + " MNT",
-        available: Number(p.available),
-        totalSupply: Number(p.totalSupply),
-        co2SavedKgPerUnit: Number(p.co2SavedKgPerUnit),
-      }));
-  } catch {
-    return [];
-  }
+      const results = await Promise.all(
+        Array.from({ length: count }, (_, i) =>
+          viemClient.readContract({
+            address: CONTRACT_ADDRESSES.mantleSepolia,
+            abi: MAZINGIRA_RWA_ABI,
+            functionName: "getProduct",
+            args: [BigInt(i + 1)],
+          })
+        )
+      );
+
+      return results
+        .map((p, i) => ({ ...p, tokenId: i + 1 }))
+        .filter((p) => p.active)
+        .map((p) => ({
+          tokenId: p.tokenId,
+          name: p.metadataURI,
+          category: CATEGORY_LABELS[Number(p.category)] ?? "Unknown",
+          pricePerUnit: formatEther(p.pricePerUnit) + " MNT",
+          available: Number(p.available),
+          totalSupply: Number(p.totalSupply),
+          co2SavedKgPerUnit: Number(p.co2SavedKgPerUnit),
+        }));
+    } catch {
+      return [];
+    }
+  };
+
+  return Promise.race([fetch(), deadline]);
 }
 
 function buildSystemPrompt(products: ReturnType<typeof getOnChainProducts> extends Promise<infer T> ? T : never) {
@@ -79,43 +85,51 @@ Warm, sharp, and grounded in African market reality. You understand both Web3 an
 }
 
 export async function POST(req: NextRequest) {
-  const { message, history = [] } = await req.json();
+  try {
+    const { message, history = [] } = await req.json();
 
-  const products = await getOnChainProducts();
-  const systemPrompt = buildSystemPrompt(products);
+    const products = await getOnChainProducts();
+    const systemPrompt = buildSystemPrompt(products);
 
-  const stream = anthropic.messages.stream({
-    model: "claude-sonnet-4-6",
-    max_tokens: 1024,
-    system: [
-      {
-        type: "text",
-        text: systemPrompt,
-        cache_control: { type: "ephemeral" },
-      },
-    ],
-    messages: [
-      ...history,
-      { role: "user" as const, content: message },
-    ],
-  });
+    const stream = anthropic.messages.stream({
+      model: "claude-sonnet-4-6",
+      max_tokens: 1024,
+      system: [
+        {
+          type: "text",
+          text: systemPrompt,
+          cache_control: { type: "ephemeral" },
+        },
+      ],
+      messages: [
+        ...history,
+        { role: "user" as const, content: message },
+      ],
+    });
 
-  const encoder = new TextEncoder();
-  const readable = new ReadableStream({
-    async start(controller) {
-      for await (const chunk of stream) {
-        if (
-          chunk.type === "content_block_delta" &&
-          chunk.delta.type === "text_delta"
-        ) {
-          controller.enqueue(encoder.encode(chunk.delta.text));
+    const encoder = new TextEncoder();
+    const readable = new ReadableStream({
+      async start(controller) {
+        try {
+          for await (const chunk of stream) {
+            if (
+              chunk.type === "content_block_delta" &&
+              chunk.delta.type === "text_delta"
+            ) {
+              controller.enqueue(encoder.encode(chunk.delta.text));
+            }
+          }
+        } finally {
+          controller.close();
         }
-      }
-      controller.close();
-    },
-  });
+      },
+    });
 
-  return new Response(readable, {
-    headers: { "Content-Type": "text/plain; charset=utf-8" },
-  });
+    return new Response(readable, {
+      headers: { "Content-Type": "text/plain; charset=utf-8" },
+    });
+  } catch (err) {
+    console.error("[agent] POST error:", err);
+    return new Response("Agent error — please try again.", { status: 500 });
+  }
 }
