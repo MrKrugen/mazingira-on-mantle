@@ -11,11 +11,15 @@ import { parseEther } from "viem";
 import { MAZINGIRA_RWA_ABI, CONTRACT_ADDRESSES } from "@/lib/contracts";
 import { mantleSepolia } from "@/lib/wagmi";
 
+const ZERO = "0x0000000000000000000000000000000000000000";
+
 function useContractAddress() {
   const chainId = useChainId();
-  return chainId === mantleSepolia.id
-    ? CONTRACT_ADDRESSES.mantleSepolia
-    : CONTRACT_ADDRESSES.mantle;
+  // Use mainnet address only when it's deployed; otherwise always use Sepolia
+  if (chainId !== mantleSepolia.id && CONTRACT_ADDRESSES.mantle !== ZERO) {
+    return CONTRACT_ADDRESSES.mantle;
+  }
+  return CONTRACT_ADDRESSES.mantleSepolia;
 }
 
 export function useNextTokenId() {

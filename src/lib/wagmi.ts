@@ -30,7 +30,7 @@ export const mantle = defineChain({
 export const wagmiConfig = getDefaultConfig({
   appName: "Mazingira on Mantle",
   projectId: process.env.NEXT_PUBLIC_WALLETCONNECT_PROJECT_ID || "",
-  chains: [mantle, mantleSepolia],
+  chains: [mantleSepolia, mantle],
   transports: {
     [mantle.id]: http("https://rpc.mantle.xyz"),
     [mantleSepolia.id]: http("https://rpc.sepolia.mantle.xyz"),
