@@ -1,7 +1,6 @@
 "use client";
 
 import Link from "next/link";
-import { ConnectKitButton } from "connectkit";
 
 export function HeroSection() {
   return (
