@@ -49,11 +49,11 @@ export function ProductCard({
   return (
     <Link
       href={`/marketplace/${tokenId}`}
-      className="group block bg-white border border-gray-200 rounded-2xl overflow-hidden hover:shadow-lg hover:border-green-200 transition-all"
+      className="group block bg-white border border-gray-200 rounded-2xl overflow-hidden hover:shadow-xl hover:border-green-200 hover:-translate-y-0.5 transition-all duration-200"
     >
       {/* Image / gradient hero */}
       <div className={`h-44 relative overflow-hidden bg-linear-to-br ${gradient}`}>
-        <div className="absolute inset-0 flex items-center justify-center text-6xl opacity-20 select-none">
+        <div className="absolute inset-0 flex items-center justify-center text-6xl opacity-40 select-none">
           {icon}
         </div>
         {image && (
