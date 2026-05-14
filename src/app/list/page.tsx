@@ -6,6 +6,7 @@ import { Navbar } from "@/components/Navbar";
 import { Footer } from "@/components/Footer";
 import { useListProduct, useIsApprovedVendor } from "@/hooks/useContract";
 import { CATEGORY_LABELS } from "@/lib/contracts";
+import { buildMetadata } from "@/lib/metadata";
 
 const MNT_USD_RATE = 0.65; // approx — update as needed
 
@@ -16,6 +17,7 @@ export default function ListProductPage() {
 
   const [form, setForm] = useState({
     name: "",
+    imageUrl: "",
     pricePerUnit: "",
     supply: "",
     category: "0",
@@ -26,7 +28,7 @@ export default function ListProductPage() {
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     listProduct({
-      metadataURI: form.name,
+      metadataURI: buildMetadata(form.name, form.imageUrl),
       pricePerUnit: form.pricePerUnit,
       supply: parseInt(form.supply),
       category: parseInt(form.category),
@@ -128,6 +130,20 @@ export default function ListProductPage() {
                 onChange={set("name")}
                 className="w-full px-4 py-3 border border-gray-200 rounded-xl text-sm text-gray-900 focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent"
               />
+            </div>
+
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1.5">
+                Product image URL <span className="text-gray-400 font-normal">— optional</span>
+              </label>
+              <input
+                type="url"
+                placeholder="https://example.com/image.jpg"
+                value={form.imageUrl}
+                onChange={set("imageUrl")}
+                className="w-full px-4 py-3 border border-gray-200 rounded-xl text-sm text-gray-900 focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent"
+              />
+              <p className="text-xs text-gray-400 mt-1">Paste a direct image link. Leave blank to use a category illustration.</p>
             </div>
 
             <div>

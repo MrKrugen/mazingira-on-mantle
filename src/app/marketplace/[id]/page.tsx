@@ -8,8 +8,17 @@ import { Navbar } from "@/components/Navbar";
 import { Footer } from "@/components/Footer";
 import { useProduct, usePurchaseProduct } from "@/hooks/useContract";
 import { CATEGORY_LABELS } from "@/lib/contracts";
+import { parseMetadata } from "@/lib/metadata";
 
 const CATEGORY_ICONS = ["⚡", "♻️", "🌽", "👜", "🏗️", "🌿"];
+const CATEGORY_GRADIENTS = [
+  "from-yellow-50 to-amber-100",
+  "from-teal-50 to-cyan-100",
+  "from-lime-50 to-green-100",
+  "from-purple-50 to-violet-100",
+  "from-orange-50 to-amber-100",
+  "from-blue-50 to-sky-100",
+];
 
 export default function ProductPage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = use(params);
@@ -47,10 +56,12 @@ export default function ProductPage({ params }: { params: Promise<{ id: string }
 
   const category = Number(product.category);
   const icon = CATEGORY_ICONS[category] ?? "🌱";
+  const gradient = CATEGORY_GRADIENTS[category] ?? "from-green-50 to-emerald-100";
   const categoryLabel = CATEGORY_LABELS[category] ?? "Green Product";
   const price = formatEther(product.pricePerUnit);
   const shortVendor = `${product.vendor.slice(0, 10)}...${product.vendor.slice(-6)}`;
   const isOwnProduct = address?.toLowerCase() === product.vendor.toLowerCase();
+  const { name: productName, image: productImage } = parseMetadata(product.metadataURI);
 
   return (
     <main className="min-h-screen bg-gray-50">
@@ -63,8 +74,18 @@ export default function ProductPage({ params }: { params: Promise<{ id: string }
 
         <div className="bg-white rounded-2xl border border-gray-200 overflow-hidden shadow-sm">
           {/* Hero */}
-          <div className="h-48 bg-gradient-to-br from-green-50 to-emerald-100 flex items-center justify-center text-8xl">
-            {icon}
+          <div className={`h-56 relative overflow-hidden bg-linear-to-br ${gradient}`}>
+            <div className="absolute inset-0 flex items-center justify-center text-9xl opacity-15 select-none">
+              {icon}
+            </div>
+            {productImage && (
+              <img
+                src={productImage}
+                alt={productName}
+                className="absolute inset-0 w-full h-full object-cover"
+                onError={(e) => (e.currentTarget.style.display = "none")}
+              />
+            )}
           </div>
 
           <div className="p-8">
@@ -78,7 +99,7 @@ export default function ProductPage({ params }: { params: Promise<{ id: string }
             </div>
 
             <h1 className="text-2xl font-bold text-gray-900 mb-1">
-              {product.metadataURI || `Green Asset #${tokenId}`}
+              {productName || `Green Asset #${tokenId}`}
             </h1>
             <p className="text-sm text-gray-400 font-mono mb-6">Vendor: {shortVendor}</p>
 

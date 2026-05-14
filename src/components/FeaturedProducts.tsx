@@ -30,7 +30,7 @@ export function FeaturedProducts() {
           {DEMO_PRODUCTS.map((p) => (
             <Link key={p.id} href={`/marketplace/${p.id}`} className="group block bg-white border border-gray-200 rounded-2xl overflow-hidden hover:shadow-lg hover:border-green-200 transition-all">
               {/* Image area */}
-              <div className="h-32 bg-gradient-to-br from-green-50 to-emerald-100 flex items-center justify-center text-5xl">
+              <div className="h-32 bg-linear-to-br from-green-50 to-emerald-100 flex items-center justify-center text-5xl">
                 {p.image}
               </div>
 

@@ -6,7 +6,7 @@ export function HeroSection() {
   return (
     <section className="relative pt-32 pb-24 overflow-hidden">
       {/* Background gradient */}
-      <div className="absolute inset-0 bg-gradient-to-br from-green-50 via-emerald-50 to-teal-50" />
+      <div className="absolute inset-0 bg-linear-to-br from-green-50 via-emerald-50 to-teal-50" />
       <div className="absolute top-20 right-0 w-96 h-96 bg-green-200/30 rounded-full blur-3xl" />
       <div className="absolute bottom-0 left-10 w-72 h-72 bg-emerald-200/30 rounded-full blur-3xl" />
 
@@ -21,7 +21,7 @@ export function HeroSection() {
           {/* Headline */}
           <h1 className="text-5xl sm:text-6xl font-bold text-gray-900 leading-tight mb-6">
             Africa's green economy,{" "}
-            <span className="text-transparent bg-clip-text bg-gradient-to-r from-green-600 to-emerald-500">
+            <span className="text-transparent bg-clip-text bg-linear-to-r from-green-600 to-emerald-500">
               on-chain
             </span>
           </h1>
