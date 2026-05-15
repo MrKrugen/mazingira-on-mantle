@@ -2,28 +2,25 @@ import Link from "next/link";
 
 export function Footer() {
   return (
-    <footer className="bg-slate-950 text-slate-400">
+    <footer className="bg-[#132317] text-stone-400">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-14">
-        <div className="flex flex-col md:flex-row items-start justify-between gap-10">
-          {/* Brand */}
-          <div className="max-w-xs">
-            <div className="flex items-center gap-2.5 mb-4">
-              <div className="w-8 h-8 rounded-lg bg-green-600 flex items-center justify-center text-sm">🌿</div>
-              <span className="font-bold text-white text-base">Mazingira on Mantle</span>
+        <div className="grid gap-10 lg:grid-cols-[1fr_auto]">
+          <div className="max-w-sm">
+            <div className="flex items-center gap-3 mb-4">
+              <div className="grid h-10 w-10 place-items-center rounded-2xl bg-lime-300 text-sm font-black text-stone-950">M</div>
+              <div>
+                <span className="block font-black text-white">Mazingira on Mantle</span>
+                <span className="block text-[11px] uppercase tracking-[0.24em] text-stone-500">green inventory exchange</span>
+              </div>
             </div>
-            <p className="text-sm leading-relaxed text-slate-500">
-              Africa&apos;s green economy, on-chain. Built for the Turing Test Hackathon 2026 on Mantle Network.
+            <p className="text-sm leading-7 text-stone-500">
+              Africa&apos;s green economy, on-chain. Built for a faster path between local climate-positive inventory and global buyer demand.
             </p>
-            <div className="flex items-center gap-1.5 mt-4 text-xs text-green-500 font-medium">
-              <span className="w-1.5 h-1.5 bg-green-500 rounded-full animate-pulse" />
-              Live on Mantle Sepolia
-            </div>
           </div>
 
-          {/* Links */}
-          <div className="grid grid-cols-2 sm:grid-cols-3 gap-8 text-sm">
+          <div className="grid grid-cols-2 gap-8 text-sm sm:grid-cols-3">
             <div>
-              <h4 className="text-white font-semibold mb-3 text-xs uppercase tracking-widest">Platform</h4>
+              <h4 className="text-xs font-black uppercase tracking-[0.22em] text-white mb-3">Platform</h4>
               <ul className="space-y-2.5">
                 <li><Link href="/marketplace" className="hover:text-white transition-colors">Marketplace</Link></li>
                 <li><Link href="/list" className="hover:text-white transition-colors">List Product</Link></li>
@@ -32,26 +29,26 @@ export function Footer() {
               </ul>
             </div>
             <div>
-              <h4 className="text-white font-semibold mb-3 text-xs uppercase tracking-widest">Network</h4>
+              <h4 className="text-xs font-black uppercase tracking-[0.22em] text-white mb-3">Network</h4>
               <ul className="space-y-2.5">
                 <li><a href="https://mantle.xyz" target="_blank" rel="noreferrer" className="hover:text-white transition-colors">Mantle</a></li>
                 <li><a href="https://mantlescan.xyz" target="_blank" rel="noreferrer" className="hover:text-white transition-colors">MantleScan</a></li>
-                <li><a href="https://sepolia.mantlescan.xyz/address/0xF12c4E7296a0f0A6df8ef91712CC0bF6A189155c" target="_blank" rel="noreferrer" className="hover:text-white transition-colors">Contract ↗</a></li>
+                <li><a href="https://sepolia.mantlescan.xyz/address/0xF12c4E7296a0f0A6df8ef91712CC0bF6A189155c" target="_blank" rel="noreferrer" className="hover:text-white transition-colors">Contract</a></li>
               </ul>
             </div>
             <div>
-              <h4 className="text-white font-semibold mb-3 text-xs uppercase tracking-widest">Origin</h4>
+              <h4 className="text-xs font-black uppercase tracking-[0.22em] text-white mb-3">Origin</h4>
               <ul className="space-y-2.5">
                 <li><a href="https://fuelflow.vibeos.com" target="_blank" rel="noreferrer" className="hover:text-white transition-colors">FuelFlow</a></li>
-                <li className="text-slate-600">VibeJam 2026 Grand Champion</li>
+                <li className="text-stone-600">Hackathon prototype</li>
               </ul>
             </div>
           </div>
         </div>
 
-        <div className="border-t border-white/5 mt-12 pt-6 flex flex-col sm:flex-row justify-between gap-2 text-xs text-slate-600">
-          <span>© 2026 Mazingira on Mantle · Built by Krugen</span>
-          <span>Powered by Mantle Network · Claude AI · Cloudflare</span>
+        <div className="mt-12 flex flex-col gap-2 border-t border-white/10 pt-6 text-xs text-stone-600 sm:flex-row sm:justify-between">
+          <span>Mazingira on Mantle. Built by Krugen.</span>
+          <span>Powered by Mantle Network, Claude AI, and Cloudflare.</span>
         </div>
       </div>
     </footer>

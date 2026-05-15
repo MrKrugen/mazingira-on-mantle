@@ -1,6 +1,6 @@
 import hre from "hardhat";
 
-const CONTRACT = "0xF12c4E7296a0f0A6df8ef91712CC0bF6A189155c";
+const CONTRACT = "0x765021A74499a3b00B98675341F30c0451A18933";
 
 const PRODUCTS = [
   {

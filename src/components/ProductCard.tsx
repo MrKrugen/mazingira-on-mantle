@@ -5,14 +5,14 @@ import { formatEther } from "viem";
 import { CATEGORY_LABELS } from "@/lib/contracts";
 import { parseMetadata } from "@/lib/metadata";
 
-const CATEGORY_ICONS = ["⚡", "♻️", "🌽", "👜", "🏗️", "🌿"];
+const CATEGORY_ICONS = ["⚡", "♻️", "🌾", "👜", "🪵", "🌿"];
 const CATEGORY_GRADIENTS = [
-  "from-yellow-50 to-amber-100",   // Clean Energy
-  "from-teal-50 to-cyan-100",      // Waste & Recycling
-  "from-lime-50 to-green-100",     // Sustainable Agri
-  "from-purple-50 to-violet-100",  // Upcycled Fashion
-  "from-orange-50 to-amber-100",   // Green Building
-  "from-blue-50 to-sky-100",       // Environmental Services
+  "from-amber-100 via-yellow-50 to-white",
+  "from-cyan-100 via-teal-50 to-white",
+  "from-lime-100 via-green-50 to-white",
+  "from-violet-100 via-fuchsia-50 to-white",
+  "from-orange-100 via-stone-50 to-white",
+  "from-sky-100 via-blue-50 to-white",
 ];
 
 type ProductCardProps = {
@@ -40,8 +40,8 @@ export function ProductCard({
 
   const { name, image } = parseMetadata(metadataURI);
   const categoryLabel = CATEGORY_LABELS[category] ?? "Green Product";
-  const icon = CATEGORY_ICONS[category] ?? "🌱";
-  const gradient = CATEGORY_GRADIENTS[category] ?? "from-green-50 to-emerald-100";
+  const icon = CATEGORY_ICONS[category] ?? "🌿";
+  const gradient = CATEGORY_GRADIENTS[category] ?? "from-green-100 via-emerald-50 to-white";
   const priceFormatted = formatEther(pricePerUnit);
   const shortVendor = `${vendor.slice(0, 6)}...${vendor.slice(-4)}`;
   const displayName = name || `Token #${tokenId}`;
@@ -49,47 +49,52 @@ export function ProductCard({
   return (
     <Link
       href={`/marketplace/${tokenId}`}
-      className="group block bg-white border border-gray-200 rounded-2xl overflow-hidden hover:shadow-xl hover:border-green-200 hover:-translate-y-0.5 transition-all duration-200"
+      className="group block overflow-hidden rounded-3xl border border-stone-200 bg-white shadow-sm shadow-stone-950/5 transition-all duration-300 hover:-translate-y-1 hover:border-emerald-300 hover:shadow-2xl hover:shadow-emerald-950/10"
     >
-      {/* Image / gradient hero */}
-      <div className={`h-44 relative overflow-hidden bg-linear-to-br ${gradient}`}>
-        <div className="absolute inset-0 flex items-center justify-center text-6xl opacity-40 select-none">
-          {icon}
+      <div className={`relative h-44 overflow-hidden bg-linear-to-br ${gradient}`}>
+        <div className="absolute left-4 top-4 rounded-full border border-white/70 bg-white/75 px-3 py-1 text-[10px] font-black uppercase tracking-[0.18em] text-stone-700 shadow-sm">
+          {categoryLabel}
         </div>
+        <div className="absolute bottom-4 right-4 rounded-2xl bg-white/80 px-3 py-1.5 text-right shadow-sm backdrop-blur">
+          <p className="text-[10px] font-bold uppercase tracking-[0.15em] text-stone-500">Available</p>
+          <p className="text-base font-black text-stone-950">{available.toString()}</p>
+        </div>
+
+        <div className="absolute inset-0 flex items-center justify-center">
+          <span className="text-5xl opacity-90 drop-shadow select-none">{icon}</span>
+        </div>
+
         {image && (
           <img
             src={image}
             alt={displayName}
-            className="absolute inset-0 w-full h-full object-cover"
+            className="absolute inset-0 h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
             onError={(e) => (e.currentTarget.style.display = "none")}
           />
         )}
-        {/* Sold-out overlay */}
         {available === 0n && (
-          <div className="absolute inset-0 bg-black/40 flex items-center justify-center">
-            <span className="text-white font-bold text-sm tracking-widest uppercase">Sold out</span>
+          <div className="absolute inset-0 grid place-items-center bg-stone-950/55">
+            <span className="rounded-full bg-white px-4 py-2 text-xs font-black uppercase tracking-[0.2em] text-stone-950">
+              Sold out
+            </span>
           </div>
         )}
       </div>
 
-      <div className="p-5">
-        <div className="flex items-center justify-between mb-2">
-          <span className="text-xs font-medium bg-green-100 text-green-700 px-2.5 py-0.5 rounded-full">
-            {icon} {categoryLabel}
-          </span>
-          <span className="text-xs text-gray-400">{available.toString()} avail.</span>
-        </div>
-
-        <h3 className="font-semibold text-gray-900 mb-1 group-hover:text-green-700 transition-colors line-clamp-2 leading-snug">
+      <div className="p-4">
+        <h3 className="line-clamp-2 text-sm font-black leading-snug text-stone-950 transition-colors group-hover:text-emerald-800">
           {displayName}
         </h3>
-        <p className="text-xs text-gray-400 font-mono mb-3">{shortVendor}</p>
+        <p className="mt-1 text-xs font-mono text-stone-400">Vendor {shortVendor}</p>
 
-        <div className="flex items-center justify-between pt-3 border-t border-gray-100">
-          <span className="font-bold text-gray-900">{priceFormatted} MNT</span>
-          <span className="text-xs text-emerald-600 font-medium">
-            🌱 {co2SavedKgPerUnit.toString()} kg CO₂
-          </span>
+        <div className="mt-4 grid grid-cols-[1fr_auto] items-end gap-3 border-t border-stone-100 pt-3">
+          <div>
+            <p className="text-[10px] font-black uppercase tracking-[0.2em] text-stone-400">Price</p>
+            <p className="mt-0.5 text-xl font-black tracking-tight text-stone-950">{priceFormatted} MNT</p>
+          </div>
+          <div className="rounded-2xl bg-emerald-50 px-2.5 py-1.5 text-right text-xs font-bold text-emerald-700 ring-1 ring-emerald-100">
+            {co2SavedKgPerUnit.toString()} kg CO2
+          </div>
         </div>
       </div>
     </Link>

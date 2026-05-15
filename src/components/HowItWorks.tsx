@@ -1,62 +1,59 @@
 const steps = [
   {
     step: "01",
-    title: "Vendor registers",
-    description: "African green entrepreneur connects wallet, gets approved, and lists real-world inventory.",
-    icon: "🧑‍🌾",
+    title: "Vendor approval",
+    description: "A green entrepreneur connects a wallet, gets approved, and prepares a real product batch.",
+    mark: "ID",
   },
   {
     step: "02",
-    title: "Inventory tokenized",
-    description: "Each product batch is minted as an ERC-1155 token on Mantle — verifiable, tradeable, on-chain.",
-    icon: "🪙",
+    title: "Inventory mint",
+    description: "The batch becomes an ERC-1155 asset with supply, price, vendor, and impact data.",
+    mark: "NFT",
   },
   {
     step: "03",
-    title: "AI sets fair price",
-    description: "Claude analyses comparable assets and recommends optimal pricing for buyers and sellers.",
-    icon: "🤖",
+    title: "AI pricing",
+    description: "The assistant helps compare category, carbon value, and buyer fit before a listing goes live.",
+    mark: "AI",
   },
   {
     step: "04",
-    title: "Buyers invest globally",
-    description: "Anyone with a wallet can discover, purchase, or invest in tokenized African green assets using MNT.",
-    icon: "🌍",
+    title: "Buyer settlement",
+    description: "Buyers acquire tokenized units in MNT and can inspect the transaction on Mantle.",
+    mark: "MNT",
   },
 ];
 
 export function HowItWorks() {
   return (
-    <section className="py-24 bg-slate-950 relative overflow-hidden">
-      {/* Subtle glow */}
-      <div className="absolute inset-0 pointer-events-none opacity-[0.04]"
-        style={{ backgroundImage: "radial-gradient(circle, #fff 1px, transparent 1px)", backgroundSize: "32px 32px" }}
-      />
+    <section className="relative overflow-hidden bg-[#132317] py-20 text-white">
+      <div className="absolute inset-0 moire-panel opacity-35 pointer-events-none" />
 
       <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="text-center mb-16">
-          <p className="text-xs font-semibold text-green-400 uppercase tracking-widest mb-3">The flow</p>
-          <h2 className="text-3xl sm:text-4xl font-bold text-white mb-4">How it works</h2>
-          <p className="text-slate-400 max-w-xl mx-auto">From real-world green inventory to on-chain investable assets in four steps.</p>
-        </div>
+        <div className="grid gap-10 lg:grid-cols-[0.8fr_1.2fr] lg:items-start">
+          <div>
+            <p className="text-xs font-black uppercase tracking-[0.24em] text-lime-300">Operating model</p>
+            <h2 className="mt-4 text-3xl sm:text-4xl font-black tracking-tight">How the market moves</h2>
+            <p className="mt-5 max-w-md text-stone-300 leading-7">
+              The flow is intentionally direct. Less ceremony for buyers, stronger signals for sellers, and a cleaner path from stock to settlement.
+            </p>
+          </div>
 
-        <div className="grid md:grid-cols-4 gap-6">
-          {steps.map((s, i) => (
-            <div key={s.step} className="relative">
-              {/* Connector line */}
-              {i < steps.length - 1 && (
-                <div className="hidden md:block absolute top-10 left-full w-full h-px bg-linear-to-r from-green-500/30 to-transparent z-0" />
-              )}
-              <div className="relative z-10 bg-white/5 border border-white/10 rounded-2xl p-6 hover:bg-white/8 hover:border-green-500/30 transition-all group">
-                <div className="w-12 h-12 rounded-xl bg-green-500/10 border border-green-500/20 flex items-center justify-center text-2xl mb-5">
-                  {s.icon}
+          <div className="grid sm:grid-cols-2 gap-4">
+            {steps.map((s) => (
+              <div key={s.step} className="rounded-[1.5rem] border border-white/10 bg-white/5 p-5 shadow-xl shadow-black/10">
+                <div className="flex items-center justify-between gap-4">
+                  <span className="text-xs font-mono font-black text-lime-300">{s.step}</span>
+                  <span className="grid h-10 w-10 place-items-center rounded-2xl bg-lime-300 text-[11px] font-black text-stone-950">
+                    {s.mark}
+                  </span>
                 </div>
-                <div className="text-xs font-mono font-bold text-green-400 mb-2">{s.step}</div>
-                <h3 className="font-semibold text-white mb-2 group-hover:text-green-300 transition-colors">{s.title}</h3>
-                <p className="text-sm text-slate-400 leading-relaxed">{s.description}</p>
+                <h3 className="mt-5 text-lg font-black text-white">{s.title}</h3>
+                <p className="mt-2 text-sm leading-6 text-stone-400">{s.description}</p>
               </div>
-            </div>
-          ))}
+            ))}
+          </div>
         </div>
       </div>
     </section>

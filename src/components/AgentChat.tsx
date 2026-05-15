@@ -2,14 +2,40 @@
 
 import { useState, useRef, useEffect } from "react";
 
-type Message = { role: "user" | "assistant"; content: string };
+type Message = {
+  role: "user" | "assistant";
+  content: string;
+  followups?: string[];
+};
 
 const STARTERS = [
-  "What's the best-value clean energy product right now?",
-  "I want to list 300kg of biochar — what price should I set?",
-  "Which products have the highest CO₂ impact per unit?",
-  "How does tokenizing inventory on Mantle work?",
+  "What's the best-value green inventory token right now?",
+  "I have 500kg of biochar in Nakuru — what should I list it for?",
+  "What happens if I don't collect my tokens within 30 days?",
+  "How do I know the physical inventory actually exists?",
 ];
+
+function parseFollowups(raw: string): { content: string; followups: string[] } {
+  const lines = raw.split("\n");
+  // Search from the end for the FOLLOWUPS line
+  for (let i = lines.length - 1; i >= 0; i--) {
+    if (lines[i].trim().toUpperCase().startsWith("FOLLOWUPS:")) {
+      const followups = lines[i]
+        .replace(/^FOLLOWUPS:\s*/i, "")
+        .split("|")
+        .map((s) => s.trim())
+        .filter(Boolean)
+        .slice(0, 3);
+      // Strip the FOLLOWUPS line and any trailing blank lines above it
+      const contentLines = lines.slice(0, i);
+      while (contentLines.length > 0 && contentLines[contentLines.length - 1].trim() === "") {
+        contentLines.pop();
+      }
+      return { content: contentLines.join("\n"), followups };
+    }
+  }
+  return { content: raw, followups: [] };
+}
 
 export function AgentChat() {
   const [messages, setMessages] = useState<Message[]>([]);
@@ -25,12 +51,11 @@ export function AgentChat() {
     if (!text.trim() || streaming) return;
 
     const userMsg: Message = { role: "user", content: text };
-    const history = messages.slice(-10); // last 5 turns for context
+    const history = messages.slice(-10);
     setMessages((m) => [...m, userMsg]);
     setInput("");
     setStreaming(true);
 
-    // placeholder for streaming response
     setMessages((m) => [...m, { role: "assistant", content: "" }]);
 
     try {
@@ -44,18 +69,29 @@ export function AgentChat() {
 
       const reader = res.body.getReader();
       const decoder = new TextDecoder();
-      let accumulated = "";
 
       while (true) {
         const { done, value } = await reader.read();
         if (done) break;
-        accumulated += decoder.decode(value, { stream: true });
+        const chunk = decoder.decode(value, { stream: true });
         setMessages((m) => {
           const updated = [...m];
-          updated[updated.length - 1] = { role: "assistant", content: accumulated };
+          const last = updated[updated.length - 1];
+          updated[updated.length - 1] = { role: "assistant", content: last.content + chunk };
           return updated;
         });
       }
+
+      // Stream complete — parse and strip the FOLLOWUPS line from accumulated state
+      setMessages((m) => {
+        const updated = [...m];
+        const last = updated[updated.length - 1];
+        if (last.role === "assistant") {
+          const { content, followups } = parseFollowups(last.content);
+          updated[updated.length - 1] = { ...last, content, followups };
+        }
+        return updated;
+      });
     } catch {
       setMessages((m) => {
         const updated = [...m];
@@ -71,22 +107,23 @@ export function AgentChat() {
   };
 
   return (
-    <div className="flex flex-col h-full">
-      {/* Messages */}
-      <div className="flex-1 overflow-y-auto px-4 py-6 space-y-4">
+    <div className="flex min-h-0 flex-1 flex-col">
+      <div className="flex-1 overflow-y-auto px-4 py-6 sm:px-6 space-y-4 bg-stone-50/60">
         {messages.length === 0 && (
-          <div className="text-center pt-8">
-            <div className="text-5xl mb-4">🤖</div>
-            <h3 className="font-semibold text-gray-700 mb-1">Mazingira AI Agent</h3>
-            <p className="text-sm text-gray-400 mb-8 max-w-sm mx-auto">
-              Ask me about pricing, products, CO₂ impact, or how to list your green inventory on Mantle.
+          <div className="mx-auto max-w-2xl pt-4 sm:pt-10 text-center">
+            <div className="mx-auto mb-4 grid h-14 w-14 place-items-center rounded-3xl bg-lime-100 text-sm font-black text-emerald-950">
+              AI
+            </div>
+            <h3 className="font-black text-stone-950">Start with a market question</h3>
+            <p className="mx-auto mt-2 mb-8 max-w-md text-sm leading-6 text-stone-500">
+              The agent can talk through pricing, products, CO2 impact, and how to list green inventory on Mantle.
             </p>
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 max-w-lg mx-auto">
+            <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
               {STARTERS.map((s) => (
                 <button
                   key={s}
                   onClick={() => send(s)}
-                  className="text-left px-4 py-3 text-sm bg-green-50 hover:bg-green-100 text-green-800 rounded-xl border border-green-200 transition-colors"
+                  className="rounded-2xl border border-stone-200 bg-white px-4 py-3 text-left text-sm font-bold text-stone-800 shadow-sm transition-colors hover:border-emerald-300 hover:bg-lime-50"
                 >
                   {s}
                 </button>
@@ -96,48 +133,71 @@ export function AgentChat() {
         )}
 
         {messages.map((msg, i) => (
-          <div key={i} className={`flex ${msg.role === "user" ? "justify-end" : "justify-start"}`}>
-            {msg.role === "assistant" && (
-              <div className="w-7 h-7 rounded-full bg-green-600 flex items-center justify-center text-white text-xs mr-2 mt-1 shrink-0">
-                🌿
-              </div>
-            )}
-            <div
-              className={`max-w-[80%] rounded-2xl px-4 py-3 text-sm leading-relaxed whitespace-pre-wrap ${
-                msg.role === "user"
-                  ? "bg-green-600 text-white rounded-tr-sm"
-                  : "bg-white border border-gray-200 text-gray-800 rounded-tl-sm shadow-sm"
-              }`}
-            >
-              {msg.content}
-              {streaming && i === messages.length - 1 && msg.role === "assistant" && (
-                <span className="inline-block w-1.5 h-4 bg-green-500 ml-0.5 animate-pulse rounded-sm" />
+          <div key={i} className={`flex flex-col ${msg.role === "user" ? "items-end" : "items-start"}`}>
+            <div className={`flex ${msg.role === "user" ? "justify-end" : "justify-start"} w-full`}>
+              {msg.role === "assistant" && (
+                <div className="mr-2 mt-1 grid h-8 w-8 shrink-0 place-items-center rounded-2xl bg-[#132317] text-[10px] font-black text-lime-200">
+                  AI
+                </div>
               )}
+              <div
+                className={`max-w-[84%] rounded-3xl px-4 py-3 text-sm leading-relaxed whitespace-pre-wrap shadow-sm ${
+                  msg.role === "user"
+                    ? "rounded-tr-md bg-[#132317] text-white"
+                    : "rounded-tl-md border border-stone-200 bg-white text-stone-800"
+                }`}
+              >
+                {msg.content}
+                {streaming && i === messages.length - 1 && msg.role === "assistant" && (
+                  <span className="ml-1 inline-block h-4 w-1.5 animate-pulse rounded-sm bg-lime-400" />
+                )}
+              </div>
             </div>
+
+            {/* Follow-up suggestions — rendered below the last completed assistant message */}
+            {msg.role === "assistant" &&
+              !streaming &&
+              i === messages.length - 1 &&
+              msg.followups &&
+              msg.followups.length > 0 && (
+                <div className="mt-3 ml-10 flex flex-wrap gap-2">
+                  {msg.followups.map((q) => (
+                    <button
+                      key={q}
+                      onClick={() => send(q)}
+                      className="rounded-2xl border border-stone-200 bg-white px-3 py-2 text-left text-xs font-bold text-stone-700 shadow-sm transition-colors hover:border-emerald-300 hover:bg-lime-50"
+                    >
+                      {q}
+                    </button>
+                  ))}
+                </div>
+              )}
           </div>
         ))}
         <div ref={bottomRef} />
       </div>
 
-      {/* Input */}
-      <div className="border-t border-gray-100 p-4 bg-white">
+      <div className="border-t border-stone-100 bg-white p-4">
         <form
-          onSubmit={(e) => { e.preventDefault(); send(input); }}
+          onSubmit={(e) => {
+            e.preventDefault();
+            send(input);
+          }}
           className="flex gap-3"
         >
           <input
             value={input}
             onChange={(e) => setInput(e.target.value)}
-            placeholder="Ask about pricing, products, or green impact…"
+            placeholder="Ask about pricing, products, or green impact"
             disabled={streaming}
-            className="flex-1 px-4 py-3 border border-gray-200 rounded-xl text-sm text-gray-900 placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-green-500 disabled:bg-gray-50"
+            className="min-w-0 flex-1 rounded-2xl border border-stone-200 bg-stone-50 px-4 py-3 text-sm text-stone-900 placeholder:text-stone-400 focus:outline-none focus:ring-2 focus:ring-lime-300 disabled:bg-stone-100"
           />
           <button
             type="submit"
             disabled={!input.trim() || streaming}
-            className="px-5 py-3 bg-green-600 hover:bg-green-700 disabled:bg-green-200 text-white font-semibold rounded-xl transition-colors text-sm"
+            className="rounded-2xl bg-lime-300 px-5 py-3 text-sm font-black text-stone-950 transition-colors hover:bg-lime-200 disabled:bg-stone-200 disabled:text-stone-400"
           >
-            {streaming ? "…" : "Send"}
+            {streaming ? "..." : "Send"}
           </button>
         </form>
       </div>
