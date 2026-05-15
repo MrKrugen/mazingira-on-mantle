@@ -178,10 +178,10 @@ export function useStorageStatus(
 
   if (!data || !enabled) return { data: null, isLoading };
 
-  const ts      = data[0].result as bigint | undefined;
-  const deposit = data[1].result as bigint | undefined;
-  const fee     = data[2].result as bigint | undefined;
-  const product = data[3].result as { freeStorageDays: bigint; maxStorageDays: bigint; storageFeePerKgDaily: bigint } | undefined;
+  const ts      = data[0]?.result as bigint | undefined;
+  const deposit = data[1]?.result as bigint | undefined;
+  const fee     = data[2]?.result as bigint | undefined;
+  const product = data[3]?.result as { freeStorageDays: bigint; maxStorageDays: bigint; storageFeePerKgDaily: bigint } | undefined;
 
   if (!ts || ts === 0n) return { data: null, isLoading };
 
