@@ -96,4 +96,4 @@ mazingira-on-mantle/
 ---
 
 Built by **Krugen** (Peter Mwembe) · Nairobi, Kenya  
-Powered by Mantle Network · Claude AI · Cloudflare
+Powered by Mantle Network · Claude AI · Vercel

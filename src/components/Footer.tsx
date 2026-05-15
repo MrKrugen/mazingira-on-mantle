@@ -33,7 +33,7 @@ export function Footer() {
               <ul className="space-y-2.5">
                 <li><a href="https://mantle.xyz" target="_blank" rel="noreferrer" className="hover:text-white transition-colors">Mantle</a></li>
                 <li><a href="https://mantlescan.xyz" target="_blank" rel="noreferrer" className="hover:text-white transition-colors">MantleScan</a></li>
-                <li><a href="https://sepolia.mantlescan.xyz/address/0xF12c4E7296a0f0A6df8ef91712CC0bF6A189155c" target="_blank" rel="noreferrer" className="hover:text-white transition-colors">Contract</a></li>
+                <li><a href="https://sepolia.mantlescan.xyz/address/0x765021A74499a3b00B98675341F30c0451A18933" target="_blank" rel="noreferrer" className="hover:text-white transition-colors">Contract</a></li>
               </ul>
             </div>
             <div>
@@ -48,7 +48,7 @@ export function Footer() {
 
         <div className="mt-12 flex flex-col gap-2 border-t border-white/10 pt-6 text-xs text-stone-600 sm:flex-row sm:justify-between">
           <span>Mazingira on Mantle. Built by Krugen.</span>
-          <span>Powered by Mantle Network, Claude AI, and Cloudflare.</span>
+          <span>Powered by Mantle Network, Claude AI, and Vercel.</span>
         </div>
       </div>
     </footer>

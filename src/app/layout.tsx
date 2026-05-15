@@ -5,7 +5,7 @@ import { Providers } from "./providers";
 export const metadata: Metadata = {
   title: "Mazingira on Mantle — Africa's Green Economy, On-Chain",
   description: "Turning African green inventory into investable digital assets with AI-powered price discovery.",
-  metadataBase: new URL("http://localhost:3000"),
+  metadataBase: new URL("https://mazingira-on-mantle.vercel.app"),
   openGraph: {
     title: "Mazingira on Mantle",
     description: "Africa's green economy, on-chain.",
