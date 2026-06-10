@@ -26,10 +26,7 @@ const config: HardhatUserConfig = {
     },
   },
   etherscan: {
-    apiKey: {
-      mantleSepolia: process.env.MANTLESCAN_API_KEY || "placeholder",
-      mantle: process.env.MANTLESCAN_API_KEY || "placeholder",
-    },
+    apiKey: process.env.MANTLESCAN_API_KEY || "placeholder",
     customChains: [
       {
         network: "mantleSepolia",

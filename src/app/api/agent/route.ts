@@ -4,11 +4,11 @@ import { createPublicClient, http, formatEther, defineChain } from "viem";
 import { MAZINGIRA_RWA_ABI, CONTRACT_ADDRESSES, CATEGORY_LABELS } from "@/lib/contracts";
 
 // Defined inline — importing from @/lib/wagmi pulls in RainbowKit which requires a browser context
-const mantleSepolia = defineChain({
-  id: 5003,
-  name: "Mantle Sepolia",
+const mantleMainnet = defineChain({
+  id: 5000,
+  name: "Mantle Mainnet",
   nativeCurrency: { name: "MNT", symbol: "MNT", decimals: 18 },
-  rpcUrls: { default: { http: ["https://rpc.sepolia.mantle.xyz"] } },
+  rpcUrls: { default: { http: ["https://rpc.mantle.xyz"] } },
 });
 
 const anthropic = new Anthropic({
@@ -17,8 +17,8 @@ const anthropic = new Anthropic({
 });
 
 const viemClient = createPublicClient({
-  chain: mantleSepolia,
-  transport: http("https://rpc.sepolia.mantle.xyz", { timeout: 8_000 }),
+  chain: mantleMainnet,
+  transport: http("https://rpc.mantle.xyz", { timeout: 8_000 }),
 });
 
 async function getOnChainProducts() {
@@ -27,7 +27,7 @@ async function getOnChainProducts() {
   const fetch = async () => {
     try {
       const nextTokenId = await viemClient.readContract({
-        address: CONTRACT_ADDRESSES.mantleSepolia,
+        address: CONTRACT_ADDRESSES.mantle,
         abi: MAZINGIRA_RWA_ABI,
         functionName: "nextTokenId",
       });
@@ -38,7 +38,7 @@ async function getOnChainProducts() {
       const results = await Promise.all(
         Array.from({ length: count }, (_, i) =>
           viemClient.readContract({
-            address: CONTRACT_ADDRESSES.mantleSepolia,
+            address: CONTRACT_ADDRESSES.mantle,
             abi: MAZINGIRA_RWA_ABI,
             functionName: "getProduct",
             args: [BigInt(i + 1)],
@@ -80,7 +80,7 @@ You help three types of people:
 - **Buyers** (local and global) discover the right tokenized green assets for their needs
 - **Anyone** understand RWA tokenization, green impact, and how the platform works
 
-## Live On-Chain Inventory (Mantle Sepolia, read fresh for this conversation)
+## Live On-Chain Inventory (Mantle Mainnet, read fresh for this conversation)
 ${productList}
 
 ## Market Intelligence Signals
@@ -91,7 +91,7 @@ ${productList}
 - Recommend vendors list before peak demand periods; recommend buyers purchase during supply peaks for best value
 
 ## Platform facts
-- Smart contract: 0x765021A74499a3b00B98675341F30c0451A18933 (Mantle Sepolia)
+- Smart contract: 0xF12c4E7296a0f0A6df8ef91712CC0bF6A189155c (Mantle Mainnet)
 - Platform fee: 2.5% on every sale
 - Payments: MNT (Mantle's native token)
 - Categories: Clean Energy, Waste & Recycling, Sustainable Agri, Upcycled Fashion, Green Building, Environmental Services

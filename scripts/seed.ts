@@ -1,6 +1,6 @@
 import hre from "hardhat";
 
-const CONTRACT = "0x765021A74499a3b00B98675341F30c0451A18933";
+const CONTRACT = "0xF12c4E7296a0f0A6df8ef91712CC0bF6A189155c";
 
 const PRODUCTS = [
   {
@@ -84,7 +84,7 @@ async function main() {
   }
 
   console.log("\n🌿 Seed complete! Marketplace is live with", PRODUCTS.length, "products.");
-  console.log("View at: https://sepolia.mantlescan.xyz/address/" + CONTRACT);
+  console.log("View at: https://mantlescan.xyz/address/" + CONTRACT);
 }
 
 main().catch((err) => {

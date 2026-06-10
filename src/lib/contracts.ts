@@ -62,7 +62,7 @@ export const MAZINGIRA_RWA_ABI = [
 
 export const CONTRACT_ADDRESSES = {
   mantleSepolia: "0x765021A74499a3b00B98675341F30c0451A18933" as `0x${string}`,
-  mantle:        "0x0000000000000000000000000000000000000000" as `0x${string}`,
+  mantle:        "0xF12c4E7296a0f0A6df8ef91712CC0bF6A189155c" as `0x${string}`,
 } as const;
 
 export const CATEGORY_LABELS = [
