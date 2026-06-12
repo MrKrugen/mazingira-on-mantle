@@ -460,28 +460,28 @@ export async function POST(req: NextRequest) {
     const systemPrompt = buildSystemPrompt(products);
 
     // Build messages array — Gemini uses OpenAI format with system as first message
-    const geminiMessages = [
+    const messages = [
       { role: "system", content: systemPrompt },
       ...history,
       { role: "user", content: message },
     ];
 
-    const response = await fetch(
-      "https://generativelanguage.googleapis.com/v1beta/openai/chat/completions",
-      {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${process.env.GEMINI_API_KEY}`,
-        },
-        body: JSON.stringify({
-          model: "gemini-2.0-flash",
-          max_tokens: 1280,
-          messages: geminiMessages,
-          stream: true,
-        }),
-      }
-    );
+const response = await fetch(
+  "https://api.groq.com/openai/v1/chat/completions",
+  {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${process.env.GROQ_API_KEY}`,
+    },
+    body: JSON.stringify({
+      model: "llama-3.3-70b-versatile",
+      max_tokens: 1280,
+      messages: messages,
+      stream: true,
+    }),
+  }
+);
 
     if (!response.ok) {
       const err = await response.text();
