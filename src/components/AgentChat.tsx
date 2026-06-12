@@ -17,7 +17,6 @@ const STARTERS = [
 
 function parseFollowups(raw: string): { content: string; followups: string[] } {
   const lines = raw.split("\n");
-  // Search from the end for the FOLLOWUPS line
   for (let i = lines.length - 1; i >= 0; i--) {
     if (lines[i].trim().toUpperCase().startsWith("FOLLOWUPS:")) {
       const followups = lines[i]
@@ -26,7 +25,6 @@ function parseFollowups(raw: string): { content: string; followups: string[] } {
         .map((s) => s.trim())
         .filter(Boolean)
         .slice(0, 3);
-      // Strip the FOLLOWUPS line and any trailing blank lines above it
       const contentLines = lines.slice(0, i);
       while (contentLines.length > 0 && contentLines[contentLines.length - 1].trim() === "") {
         contentLines.pop();
@@ -82,7 +80,6 @@ export function AgentChat() {
         });
       }
 
-      // Stream complete — parse and strip the FOLLOWUPS line from accumulated state
       setMessages((m) => {
         const updated = [...m];
         const last = updated[updated.length - 1];
@@ -108,14 +105,14 @@ export function AgentChat() {
 
   return (
     <div className="flex min-h-0 flex-1 flex-col">
-      <div className="flex-1 overflow-y-auto px-4 py-6 sm:px-6 space-y-4 bg-stone-50/60">
+      <div className="flex-1 overflow-y-auto px-4 py-6 sm:px-6 space-y-4 bg-[#0a1410]">
         {messages.length === 0 && (
           <div className="mx-auto max-w-2xl pt-4 sm:pt-10 text-center">
-            <div className="mx-auto mb-4 grid h-14 w-14 place-items-center rounded-3xl bg-lime-100 text-sm font-black text-emerald-950">
+            <div className="mx-auto mb-4 grid h-14 w-14 place-items-center rounded-3xl bg-gradient-to-br from-emerald-500 to-teal-600 text-sm font-black text-emerald-950 shadow-lg shadow-emerald-500/20">
               AI
             </div>
-            <h3 className="font-black text-stone-950">Start with a market question</h3>
-            <p className="mx-auto mt-2 mb-8 max-w-md text-sm leading-6 text-stone-500">
+            <h3 className="font-black text-white">Start with a market question</h3>
+            <p className="mx-auto mt-2 mb-8 max-w-md text-sm leading-6 text-emerald-300/50">
               The agent can talk through pricing, products, CO2 impact, and how to list green inventory on Mantle.
             </p>
             <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
@@ -123,7 +120,7 @@ export function AgentChat() {
                 <button
                   key={s}
                   onClick={() => send(s)}
-                  className="rounded-2xl border border-stone-200 bg-white px-4 py-3 text-left text-sm font-bold text-stone-800 shadow-sm transition-colors hover:border-emerald-300 hover:bg-lime-50"
+                  className="rounded-2xl border border-emerald-900/40 bg-[#0d1a13] px-4 py-3 text-left text-sm font-bold text-stone-200 shadow-sm transition-colors hover:border-emerald-500/40 hover:bg-emerald-950/40"
                 >
                   {s}
                 </button>
@@ -136,25 +133,24 @@ export function AgentChat() {
           <div key={i} className={`flex flex-col ${msg.role === "user" ? "items-end" : "items-start"}`}>
             <div className={`flex ${msg.role === "user" ? "justify-end" : "justify-start"} w-full`}>
               {msg.role === "assistant" && (
-                <div className="mr-2 mt-1 grid h-8 w-8 shrink-0 place-items-center rounded-2xl bg-[#132317] text-[10px] font-black text-lime-200">
+                <div className="mr-2 mt-1 grid h-8 w-8 shrink-0 place-items-center rounded-2xl bg-gradient-to-br from-emerald-500 to-teal-600 text-[10px] font-black text-emerald-950 shadow-md shadow-emerald-500/10">
                   AI
                 </div>
               )}
               <div
                 className={`max-w-[84%] rounded-3xl px-4 py-3 text-sm leading-relaxed whitespace-pre-wrap shadow-sm ${
                   msg.role === "user"
-                    ? "rounded-tr-md bg-[#132317] text-white"
-                    : "rounded-tl-md border border-stone-200 bg-white text-stone-800"
+                    ? "rounded-tr-md bg-gradient-to-br from-emerald-500 to-teal-600 text-emerald-950 font-medium"
+                    : "rounded-tl-md border border-emerald-900/40 bg-[#0d1a13] text-stone-200"
                 }`}
               >
                 {msg.content}
                 {streaming && i === messages.length - 1 && msg.role === "assistant" && (
-                  <span className="ml-1 inline-block h-4 w-1.5 animate-pulse rounded-sm bg-lime-400" />
+                  <span className="ml-1 inline-block h-4 w-1.5 animate-pulse rounded-sm bg-emerald-400" />
                 )}
               </div>
             </div>
 
-            {/* Follow-up suggestions — rendered below the last completed assistant message */}
             {msg.role === "assistant" &&
               !streaming &&
               i === messages.length - 1 &&
@@ -165,7 +161,7 @@ export function AgentChat() {
                     <button
                       key={q}
                       onClick={() => send(q)}
-                      className="rounded-2xl border border-stone-200 bg-white px-3 py-2 text-left text-xs font-bold text-stone-700 shadow-sm transition-colors hover:border-emerald-300 hover:bg-lime-50"
+                      className="rounded-2xl border border-emerald-900/40 bg-[#0d1a13] px-3 py-2 text-left text-xs font-bold text-emerald-300 shadow-sm transition-colors hover:border-emerald-500/40 hover:bg-emerald-950/40"
                     >
                       {q}
                     </button>
@@ -177,7 +173,7 @@ export function AgentChat() {
         <div ref={bottomRef} />
       </div>
 
-      <div className="border-t border-stone-100 bg-white p-4">
+      <div className="border-t border-emerald-900/30 bg-[#0d1a13] p-4">
         <form
           onSubmit={(e) => {
             e.preventDefault();
@@ -190,12 +186,12 @@ export function AgentChat() {
             onChange={(e) => setInput(e.target.value)}
             placeholder="Ask about pricing, products, or green impact"
             disabled={streaming}
-            className="min-w-0 flex-1 rounded-2xl border border-stone-200 bg-stone-50 px-4 py-3 text-sm text-stone-900 placeholder:text-stone-400 focus:outline-none focus:ring-2 focus:ring-lime-300 disabled:bg-stone-100"
+            className="min-w-0 flex-1 rounded-2xl border border-emerald-900/40 bg-[#0a1410] px-4 py-3 text-sm text-white placeholder:text-emerald-300/30 focus:outline-none focus:ring-2 focus:ring-emerald-500/40 disabled:opacity-50"
           />
           <button
             type="submit"
             disabled={!input.trim() || streaming}
-            className="rounded-2xl bg-lime-300 px-5 py-3 text-sm font-black text-stone-950 transition-colors hover:bg-lime-200 disabled:bg-stone-200 disabled:text-stone-400"
+            className="rounded-2xl bg-gradient-to-br from-emerald-500 to-teal-600 px-5 py-3 text-sm font-black text-emerald-950 shadow-lg shadow-emerald-500/20 transition-opacity hover:opacity-90 disabled:opacity-30 disabled:shadow-none"
           >
             {streaming ? "..." : "Send"}
           </button>
