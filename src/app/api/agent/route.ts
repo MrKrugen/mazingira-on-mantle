@@ -462,7 +462,7 @@ export async function POST(req: NextRequest) {
     // Build messages array — Gemini uses OpenAI format with system as first message
     const messages = [
       { role: "system", content: systemPrompt },
-      ...history,
+      ...history.map((m: any) => ({ role: m.role, content: m.content })),
       { role: "user", content: message },
     ];
 
