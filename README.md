@@ -14,13 +14,14 @@ Built for the [Turing Test Hackathon 2026](https://turingtest.mantle.xyz) by Man
 |---|---|
 | **App** | https://mazingira-on-mantle.vercel.app |
 | **Contract (Mantle Sepolia)** | [`0x765021A74499a3b00B98675341F30c0451A18933`](https://sepolia.mantlescan.xyz/address/0x765021A74499a3b00B98675341F30c0451A18933) |
-| **Contract (Mantle Mainnet)** | Coming before submission deadline |
+| **Contract (Mantle Mainnet)** | [`0xF12c4E7296a0f0A6df8ef91712CC0bF6A189155c`](https://mantlescan.xyz/address/0xF12c4E7296a0f0A6df8ef91712CC0bF6A189155c) |
+| **Live Mainnet Purchase** | ✅ Confirmed June 10, 2026 |
 
 ---
 
 ## What it is
 
-Mazingira on Mantle is a DApp where African green entrepreneurs — clean energy producers, sustainable farmers, recycling businesses — tokenize their real-world inventory as ERC-1155 assets on the Mantle blockchain. Global buyers and investors can discover, purchase, and invest in these tokenized assets using MNT. An AI agent (powered by Claude) provides live pricing intelligence and buyer-seller matching.
+Mazingira on Mantle is a DApp where African green entrepreneurs — clean energy producers, sustainable farmers, recycling businesses — tokenize their real-world inventory as ERC-1155 assets on the Mantle blockchain. Global buyers and investors can discover, purchase, and invest in these tokenized assets using MNT. An AI agent (powered by Groq) reads live on-chain inventory state and provides real-time pricing intelligence and buyer-seller matching.
 
 **One-line pitch:** Africa's green economy, on-chain — real vendors, real inventory, real impact.
 
@@ -30,7 +31,7 @@ Mazingira on Mantle is a DApp where African green entrepreneurs — clean energy
 - **Secondary market** — resell purchased tokens with live premium/discount indicators
 - **Vendor registration** — 3-step application flow with field-agent verification model
 - **Storage fee system** — on-chain storage deadlines with forced liquidation mechanics
-- **AI agent** — Claude-powered pricing intelligence, CO2 impact estimates, buyer matching
+- **AI agent** — Groq-powered live pricing intelligence with on-chain context, CO2 impact estimates, buyer matching
 - **Vendor directory** — field-verified vendor profiles with role badges
 
 ### Origin story
@@ -48,7 +49,7 @@ This project evolved from **FuelFlow** (VibeJam 2026 Grand Champion), a biomass 
 | Blockchain | Mantle Network (EVM-compatible, chainId 5000 / 5003) |
 | Smart contracts | Solidity 0.8.24, ERC-1155, OpenZeppelin v5 |
 | Contract tooling | Hardhat v2.28.6 |
-| AI agent | Anthropic Claude API (`@anthropic-ai/sdk`) |
+| AI agent | Groq API (Llama 3.1 8B Instant) |
 | Hosting | Vercel |
 
 ---
@@ -105,8 +106,7 @@ Open [http://localhost:3000](http://localhost:3000).
 | Variable | Required | Description |
 |---|---|---|
 | `NEXT_PUBLIC_WALLETCONNECT_PROJECT_ID` | Yes | Free project ID from [cloud.walletconnect.com](https://cloud.walletconnect.com) — needed for RainbowKit wallet connect |
-| `ANTHROPIC_API_KEY` | Yes | Anthropic API key — powers the AI agent and CO2 suggest feature |
-| `ANTHROPIC_BASE_URL` | No | Custom Anthropic base URL (leave blank to use the default `api.anthropic.com`) |
+| `GROQ_API_KEY` | Yes | Groq API key (free tier at [console.groq.com](https://console.groq.com)) — powers the AI pricing agent with live on-chain context |
 | `DEPLOYER_PRIVATE_KEY` | Hardhat only | Deployer wallet private key — only used by `deploy.ts` and `seed.ts`, never sent to the browser |
 | `MANTLESCAN_API_KEY` | Hardhat only | For contract verification on MantleScan |
 
@@ -165,5 +165,5 @@ mazingira-on-mantle/
 
 ---
 
-Built by **Krugen** (Peter Mwembe) · Nairobi, Kenya  
-Powered by Mantle Network · Claude AI · Vercel
+Built by **Peter Mufunga** · Kisumu, Kenya  
+Powered by Mantle Network · Groq AI · Vercel
